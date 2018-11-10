@@ -25,6 +25,7 @@ import miage.Crous.Data.Entity.Possede;
 import miage.Crous.Data.Entity.PossedeId;
 import miage.Crous.Data.Entity.TypeIndividu;
 
+@SuppressWarnings("unused")
 @Configuration
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
@@ -43,14 +44,15 @@ public class AppConfig {
 			TypeIndividu.class,
 			Bien.class,
 			Location.class,
-			Possede.class
+			Possede.class,
+			PossedeId.class,
+			LocationId.class
 		});
 	}
 	@Bean
 	public DataSource getDataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName(env.getProperty("db.driver"));
-		//dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUrl(env.getProperty("db.url"));
 		dataSource.setUsername(env.getProperty("db.username"));
 		dataSource.setPassword(env.getProperty("db.password"));

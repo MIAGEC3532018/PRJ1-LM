@@ -60,15 +60,19 @@ public class CrousServiceImpl implements CrousService {
 	}
 	@Override
 	public void AjouterUnbienEnPropriete(Personne p, Bien b) {
-		personneDao.ajoutBien(p, b);
+		personneDao.addOrUpdate(p);
+		bienDao.ajouter(b);
+		personneDao.ajoutPropriete(p, b);
 	}
 	@Override
 	public void AjouterUnbienEnLocation(Personne p, Bien b) {
+		personneDao.addOrUpdate(p);
+		bienDao.ajouter(b);
 		personneDao.AjoutLocation(p, b);
 	}
 	@Override
-	public void SupprimerUneLocation(Personne p, Bien b) {
-		personneDao.SupresionBienEnLocation(p, b);
+	public void SupprimerUneLocationByPersonne(Personne p) {
+		personneDao.SupresionBienEnLocation(p);
 		
 	}
 	@Override
@@ -81,7 +85,6 @@ public class CrousServiceImpl implements CrousService {
 	}
 	@Override
 	public Personne getPersonneById(Integer id) {
-		
 		return personneDao.getById(id);
 	}
 	@Override
@@ -100,6 +103,4 @@ public class CrousServiceImpl implements CrousService {
 	public List<Bien> getAllBienSansLocataire() {
 		return bienDao.getAllBienVide();
 	}
-	
-	
 }

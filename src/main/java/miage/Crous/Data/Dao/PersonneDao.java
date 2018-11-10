@@ -28,14 +28,14 @@ public interface PersonneDao {
 	 * @param p Personne.
 	 * @param b bien.
 	 */
-	void ajoutBien(Personne p,Bien b);
+	void ajoutPropriete(Personne p,Bien b);
 
 	/**
 	 * Suppression d'un bien en location.
 	 * @param p
 	 * @param b
 	 */
-	void SupresionBienEnLocation(Personne p,Bien b);
+	void SupresionBienEnLocation(Personne p);
 
 	/**
 	 * Ajout d'un bien en location.

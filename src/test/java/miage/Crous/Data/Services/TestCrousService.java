@@ -20,7 +20,7 @@ import miage.Crous.Data.Entity.TypeIndividu;
 import miage.Crous.Data.Entity.TypeIndividuEnum;
 
 @Transactional
-@Rollback(false)
+@Rollback(true)
 @ContextConfiguration(classes = {AppConfig.class})
 @RunWith(JUnitPlatform.class)
 class TestCrousService {
@@ -75,13 +75,13 @@ class TestCrousService {
 		assertTrue(bien.getAddressB().equals("New"));
 		bien.setAddressB("Ancien");
 		assertDoesNotThrow(()-> {crousService.addorUpdateBien(bien);});
-		assertTrue(bien.getIdBien().equals(1L));
+		assertTrue(bien.getIdBien().equals(1));
 	}
 
 	@Test
 	@DisplayName("Supression d'un bien avec une location.")
 	void testSupprimerUneBien() {
-		Bien b = crousService.getBienById(1);
+		Bien b = crousService.getBienById(2);
 		assertThrows(IllegalArgumentException.class,()->{
 			crousService.SupprimerUneBien(b);
 			});

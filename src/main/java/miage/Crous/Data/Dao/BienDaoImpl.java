@@ -21,7 +21,7 @@ import miage.Crous.Data.Entity.Personne;
 public class BienDaoImpl implements BienDao {
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	@Override
 	public void ajouter(Bien b) {
 		sessionFactory.getCurrentSession().saveOrUpdate(b);
@@ -29,20 +29,22 @@ public class BienDaoImpl implements BienDao {
 
 	@Override
 	public void supprimer(Bien b)  {
-		
+
 		if (!bienEnlocation(b))
 		{
-			System.out.println("bienEnlocation");
-			String hqlDelete = "delete Bien b where b.id = :id";
+			this.deletePossesses(b);
 			
+			/** Supression du bien*/
+			String hqlDelete = "delete Bien b where b.id = :id";
+
 			sessionFactory.getCurrentSession().createQuery( hqlDelete )
-			        .setParameter( "id", b.getIdBien() )
-			        .executeUpdate();
+			.setParameter( "id", b.getIdBien() )
+			.executeUpdate();
 
 			return;
 		}
 		throw new IllegalArgumentException("le bien peut pas être location");
-		
+
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class BienDaoImpl implements BienDao {
 	public List<Bien> getAllBien() {
 		@SuppressWarnings("unchecked")
 		TypedQuery<Bien> query=sessionFactory.getCurrentSession().createQuery("from Bien");
-	    return query.getResultList();
+		return query.getResultList();
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class BienDaoImpl implements BienDao {
 		Query<Bien> query = sessionFactory.getCurrentSession().createNativeQuery("Select b.* from BIEN b "
 				+ "inner join LOCATION l on l.id_bien=b.id_bien where l.id_personne=:idp",Bien.class );
 		query.setParameter("idp", p.getIdPersonne());
-	    return query.getResultList();
+		return query.getResultList();
 	}
 
 	@Override
@@ -70,26 +72,26 @@ public class BienDaoImpl implements BienDao {
 		Query<Bien> query = sessionFactory.getCurrentSession().createNativeQuery("Select b.* from BIEN b "
 				+ "inner join POSSEDE p on p.id_bien = b.id_bien where p.id_personne=:idp",Bien.class );
 		query.setParameter("idp", p.getIdPersonne());
-	    return query.getResultList();
+		return query.getResultList();
 	}
 
 	@Override
 	public List<Bien> getAllBienVide() {
-		
+
 		Query<Bien> query = sessionFactory.getCurrentSession().createNativeQuery("Select b.* from BIEN b "
 				+ "left join LOCATION l on l.id_bien = b.id_bien where l.id_personne is null",Bien.class );
-		
-	    return query.getResultList();
+
+		return query.getResultList();
 	}
 
 	@Override
 	public List<Bien> getAllBienSansProprietaire() {
 		Query<Bien> query = sessionFactory.getCurrentSession().createNativeQuery("Select b.* from BIEN b "
 				+ "left join POSSEDE p on p.id_bien = b.id_bien where p.id_personne is null",Bien.class );
-		
-	    return query.getResultList();
+
+		return query.getResultList();
 	}
-	
+
 	/**
 	 * Recherhe si le bien a une location.
 	 * @param b Bien à tester.
@@ -97,21 +99,16 @@ public class BienDaoImpl implements BienDao {
 	 */
 	private boolean bienEnlocation(Bien b) {
 		Integer idb = b.getIdBien();
-		Bien s2B = sessionFactory.getCurrentSession().find(Bien.class, idb);
-		int i= s2B.getLocations().size();
-		return (i > 0);
+		b = sessionFactory.getCurrentSession().find(Bien.class, idb);
+		return (b.getLocations().size() > 0);
 	}
-	
-	/**
-	 * Recherche si le personne a une location.
-	 * @param p Personne.
-	 * @return true s'il y a une location.
-	 */
-	@SuppressWarnings("unused")
-	private boolean personneEnlocation(Personne p) {
-		Integer id = p.getIdPersonne();
-		Personne p2 = sessionFactory.getCurrentSession().find(Personne.class, id);
-		int i= p2.getLocations().size();
-		return (i > 0);		
+	private void deletePossesses(Bien b)
+	{
+		if(b.getPossedes().size() > 0) {
+			/*** Supression du lien de propriéte**/
+			b.getPossedes().forEach((po)->{
+				sessionFactory.getCurrentSession().createQuery("delete from Possede where id = :id").setParameter("id",po.getId()).executeUpdate();
+			});
+		}
 	}
 }

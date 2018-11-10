@@ -38,8 +38,15 @@ public class Bien implements java.io.Serializable {
 	 * Nature du bien.
 	 */
 	private int nature;
-	
+
+	/**
+	 * Liste propriétaire. 
+	 */
 	private Set<Possede> possedes = new HashSet<Possede>(0);
+	
+	/**
+	 * Liste des locataire du bien.
+	 */
 	private Set<Location> locations = new HashSet<Location>(0);
 	
 	/**
@@ -49,15 +56,22 @@ public class Bien implements java.io.Serializable {
 	}
 
 	/**
-	 * 
-	 * @param addressB
-	 * @param nature
+	 * Construction d'un bien.
+	 * @param addressB address du bien.
+	 * @param nature Nature du bien.
 	 */
 	public Bien(String addressB, int nature) {
 		this.addressB = addressB;
 		this.nature = nature;
 	}
 	
+	/**
+	 *	Contructeur d'un bien. 
+	 * @param addressB Adresse du bien.
+	 * @param nature Nature du bien.
+	 * @param possedes liste propriétaire.
+	 * @param locations liste de locataire.
+	 */
 	public Bien(String addressB, int nature, Set<Possede> possedes, Set<Location> locations) {
 		this.addressB = addressB;
 		this.nature = nature;
@@ -67,8 +81,8 @@ public class Bien implements java.io.Serializable {
 
 
 	/**
-	 * 
-	 * @return
+	 * Obtient l'identifiant du bien.
+	 * @return L'identifiant du bien.
 	 */
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -79,16 +93,16 @@ public class Bien implements java.io.Serializable {
 	}
 
 	/**
-	 * 
-	 * @param idBien
+	 * Permet la mise à jour de l'identifiant du bien.
+	 * @param idBien nouvelle id.
 	 */
 	public void setIdBien(Integer idBien) {
 		this.idBien = idBien;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Obtient l'adresse du bien.
+	 * @return L'adresse du bien.
 	 */
 	@Column(name = "address_b", nullable = false, length = 30)
 	public String getAddressB() {
@@ -96,16 +110,16 @@ public class Bien implements java.io.Serializable {
 	}
 
 	/**
-	 * 
-	 * @param addressB
+	 * Permet la mise à jour de l'identifiant du bien.
+	 * @param addressB nouvelle adresse.
 	 */
 	public void setAddressB(String addressB) {
 		this.addressB = addressB;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Obtient la nature.
+	 * @return l'id de la nature.
 	 */
 	@Column(name = "nature", nullable = false)
 	public int getNature() {
@@ -113,14 +127,14 @@ public class Bien implements java.io.Serializable {
 	}
 
 	/**
-	 * 
+	 * Permet la mise à jour de la nature.
 	 * @param nature
 	 */
 	public void setNature(int nature) {
 		this.nature = nature;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bien")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "bien")
 	public Set<Possede> getPossedes() {
 		return this.possedes;
 	}
@@ -129,7 +143,7 @@ public class Bien implements java.io.Serializable {
 		this.possedes = possedes;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bien")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "bien")
 	public Set<Location> getLocations() {
 		return this.locations;
 	}

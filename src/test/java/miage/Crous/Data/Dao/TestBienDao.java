@@ -13,7 +13,10 @@ import org.junit.runner.RunWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
 import miage.Crous.Config.AppConfig;
 import miage.Crous.Data.Entity.Bien;
 import miage.Crous.Data.Entity.Personne;
@@ -23,16 +26,18 @@ import miage.Crous.Data.Services.CrousService;
  * @author linda
  *
  */
+
 @ContextConfiguration(classes = {AppConfig.class})
 @RunWith(JUnitPlatform.class)
 @SelectClasses( BienDao.class )
+@Transactional
+@Rollback(true)
 class TestBienDao {
 
 	private static AnnotationConfigApplicationContext context;
 	
 	private static CrousService serviceCrous;
 	
-	private static Integer lastidInsert = -1;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -63,9 +68,6 @@ class TestBienDao {
         assertDoesNotThrow(()->{serviceCrous.addorUpdateBien(b);});
         assertTrue(b.getAddressB().equals("lolo"));
 		assertNotNull(b.getIdBien());        
-		
-		lastidInsert = b.getIdBien();
-		System.out.println("EndtestAjouter");
 	}
 	
 	/**
@@ -140,8 +142,7 @@ class TestBienDao {
 	@Test
 	@DisplayName("Suppression d'un bien")
 	void testSupprimer() {
-		
-		Bien b= serviceCrous.getBienById(lastidInsert);
+		Bien b= serviceCrous.getBienById(5);
 		assertNotNull(b);
 		assertDoesNotThrow(()->serviceCrous.SupprimerUneBien(b));
 		assertThrows(RuntimeException.class, ()->{
